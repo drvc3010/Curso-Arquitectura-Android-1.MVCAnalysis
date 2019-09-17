@@ -8,56 +8,52 @@ import android.util.Log
 import com.anncode.offersandcoupons.model.Coupon
 import com.anncode.offersandcoupons.R
 import com.anncode.offersandcoupons.model.ApiAdapter
+import com.anncode.offersandcoupons.presenter.CouponPresenter
+import com.anncode.offersandcoupons.presenter.CouponPresenterImpl
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.lang.Exception
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() , CouponView {
+
+    private  var couponPresenter : CouponPresenter  ?  = null
+    private  var  rvCoupons: RecyclerView ? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         supportActionBar?.hide()
 
+        couponPresenter = CouponPresenterImpl(this)
         //VIEW
-        val rvCoupons: RecyclerView = findViewById(R.id.rvCoupons) //UI
-        rvCoupons.layoutManager = LinearLayoutManager(this)
-        val coupons = ArrayList<Coupon>()
+        rvCoupons= findViewById(R.id.rvCoupons) //UI
+        rvCoupons?.layoutManager = LinearLayoutManager(this)
+
+        getCoupons()
         //VIEW
 
 
-        //CONTROLLER
-        val apiAdapter = ApiAdapter()
-        val apiService = apiAdapter.getClientService()
-        val call = apiService.getCoupons()
-
-        call.enqueue(object : Callback<JsonObject> {
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                Log.e("ERROR: ", t.message)
-                t.stackTrace
-            }
-
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                val offersJsonArray = response.body()?.getAsJsonArray("offers")
-                offersJsonArray?.forEach { jsonElement: JsonElement ->
-                    var jsonObject = jsonElement.asJsonObject
-                    var coupon = Coupon(jsonObject)
-                    coupons.add(coupon)
-                }
-                //VIEW
-                rvCoupons.adapter = RecyclerCouponsAdapter(
-                    coupons,
-                    R.layout.card_coupon
-                )
-                //VIEW
-            }
-
-
-        })
-        //CONTROLLER
 
 
     }
+
+    override fun getCoupons() {
+        couponPresenter?.getCoupons()
+    }
+
+    override fun showCounpos(coupoons: ArrayList<Coupon>?) {
+        try {
+            rvCoupons!!.adapter = RecyclerCouponsAdapter(coupoons,R.layout.card_coupon)
+        }
+        catch (e:Exception) {
+           e.printStackTrace()
+        }
+
+
+    }
+
+
 }

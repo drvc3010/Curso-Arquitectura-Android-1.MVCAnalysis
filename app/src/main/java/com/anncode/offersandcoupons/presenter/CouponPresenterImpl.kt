@@ -1,15 +1,20 @@
 package com.anncode.offersandcoupons.presenter
 
 import com.anncode.offersandcoupons.model.Coupon
+import com.anncode.offersandcoupons.model.CouponsInteractor
+import com.anncode.offersandcoupons.model.CouponsInteractorImpl
 import com.anncode.offersandcoupons.view.CouponView
 
 class CouponPresenterImpl (var couponView  : CouponView) : CouponPresenter {
-    override fun showCoupons(coupons: ArrayList<Coupon>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+
+    private  var couponsInteractor :CouponsInteractor = CouponsInteractorImpl(this)
+
+    override fun showCoupons(coupons: ArrayList<Coupon>?) {
+        couponView.showCounpos(coupons)
+     }
 
     override fun getCoupons() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+       couponsInteractor.getCouponsAPI()
     }
 
 }

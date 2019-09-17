@@ -4,5 +4,5 @@ import com.anncode.offersandcoupons.model.Coupon
 
 interface CouponView{
     fun  getCoupons()
-    fun  showCounpos(coupoons : ArrayList<Coupon>)
+    fun  showCounpos(coupoons : ArrayList<Coupon>?)
 }
